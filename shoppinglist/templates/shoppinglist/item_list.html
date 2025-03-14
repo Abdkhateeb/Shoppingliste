@@ -1,0 +1,55 @@
+{% extends "shoppinglist/base.html" %}
+
+{% block title %}Meine Einkaufsliste{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Meine Einkaufsliste</h1>
+
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Menge</th>
+                <th>Status</th>
+                <th>Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>
+                    {% if item.purchased %}
+                        ✅ Gekauft
+                    {% else %}
+                        ⏳ Offen
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not item.purchased %}
+                        <a href="{% url 'purchase_item' item.id %}" class="btn btn-success btn-sm">✔ Gekauft</a>
+                    {% endif %}
+                    <a href="{% url 'delete_item' item.id %}" class="btn btn-danger btn-sm">🗑 Löschen</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2 class="mt-4">Neues Item hinzufügen</h2>
+    <form method="POST" class="row g-3">
+        {% csrf_token %}
+        <div class="col-md-5">
+            <input type="text" name="name" class="form-control" placeholder="Artikelname" required>
+        </div>
+        <div class="col-md-3">
+            <input type="number" name="quantity" class="form-control" placeholder="Menge" required>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Hinzufügen</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
